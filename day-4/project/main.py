@@ -239,8 +239,10 @@ def profile():
         flash("Please Login and try again","info")
         return redirect(url_for('login'))
     userdata=Signup.query.filter_by(email=current_user.email).first()
+    port=Portfolio.query.filter_by(email=current_user.email).first()
     print(userdata)
-    return render_template("profile.html",userdata=userdata)
+    
+    return render_template("profile.html",userdata=userdata,port=port)
 
 
 @app.route("/editprofile/<int:id>",methods=['GET'])
@@ -290,6 +292,15 @@ def updateprofile(id):
     return render_template("profile.html",userdata=userdata)
 
 
+# @app.route("/displayportfolio",methods=['GET','POST'])
+# def displayportfolio():
+#     userdata = Signup.query.filter_by(email=current_user.email).first()
+#     port=Portfolio.query.filter_by(email=current_user.email).first()
+#     return render_template("displayportfolio.html",userdata=userdata,port=port)
+
+
+
+
 def allowed_resumes(filename):
     return '.' in filename and filename.rsplit('.',1)[1].lower() in app.config['ALLOWED_FILES']
 
@@ -303,7 +314,7 @@ def portfolio():
     userdata=Signup.query.filter_by(email=current_user.email).first()
 
     check=Portfolio.query.filter_by(email=current_user.email).first()
-    
+
     if not check:
         render_template("portfolio.html",userdata=userdata)
 
@@ -320,9 +331,6 @@ def portfolio():
             file = request.files['resume']
             print(file)
 
-            # if 'file' not in request.files:
-            #     flash('No file part')
-            #     return redirect(request.url)
 
             if file.filename == '':
                 flash('No selected file')
@@ -337,14 +345,14 @@ def portfolio():
                 db.session.commit()
 
                 flash("Portfolio is Uploaded","success")            
-                return redirect(url_for('profile'))
+                return redirect(url_for('profile',userdata=userdata,port=check))
 
             else:
                 flash("Upload the resume which has correct file formats","danger")
                 return render_template("portfolio.html",userdata=userdata) 
 
     else:
-        return redirect(url_for('profile'))    
+        return redirect(url_for('profile',userdata=userdata,port=check))    
             
     return render_template("portfolio.html",userdata=userdata)  
 
