@@ -18,7 +18,9 @@ Profile
         {% include "messages.html" %}
         <div class="card">
             <br>
+            {% if userdata.profilepicture  %}
             <img src="{{ url_for('static',filename='uploads/' + userdata.profilepicture) }}"  class="card-img-top profileimg" alt="...">
+            {% endif %}
             <div class="card-body">
               <h5 class="card-title">{{userdata.first_name}} {{userdata.last_name}}</h5>
             
@@ -33,7 +35,6 @@ Profile
               
             </div>
           </div>
-
     </div>
 
 

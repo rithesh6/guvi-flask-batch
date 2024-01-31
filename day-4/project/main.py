@@ -49,7 +49,7 @@ app.config['MAX_CONTENT_LENGTH']=16*1024*1024
 
 # database configuration
 # app.config['SQLALCHEMY_DATABASE_URI']='mysql://username:password@localhost/databasename'
-app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:@localhost/capstoneproject'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://tap2023:tap2023@APINP-ELPTLWP5Q\SQLEXPRESS/capstoneproject?driver=SQL Server'
 db=SQLAlchemy(app)
 
 
@@ -141,7 +141,7 @@ def signup():
                 return redirect(url_for("signup"))
             
             gen_pass=generate_password_hash(pass1)
-            query=f"INSERT into `signup` (`first_name`,`last_name`,`email`,`password`,`phone`) VALUES ('{firstName}','{lastName}','{email}','{gen_pass}','{phone}')"
+            query=f"INSERT into signup (first_name,last_name,email,password,phone) VALUES ('{firstName}','{lastName}','{email}','{gen_pass}','{phone}')"
 
             with db.engine.begin() as conn:
                 conn.exec_driver_sql(query)               
@@ -268,7 +268,7 @@ def updateprofile(id):
         if image:
             filename=secure_filename(image.filename)
             image.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-            query=f"UPDATE `signup` SET `first_name`='{firstName}',`last_name`='{lastName}',`email`='{email}',`password`='{gen_pass}',`phone`='{phone}',`profilepicture`='{filename}' WHERE `signup`.`user_id`={id}"
+            query=f"UPDATE signup SET first_name='{firstName}',last_name='{lastName}',email='{email}',password='{gen_pass}',phone='{phone}',profilepicture='{filename}' WHERE signup.user_id={id}"
             with db.engine.begin() as conn:
                 conn.exec_driver_sql(query)               
                 flash("Profile Info is Updated","info")
@@ -279,6 +279,12 @@ def updateprofile(id):
             return render_template("editprofile.html",userdata=userdata)
 
     return render_template("profile.html",userdata=userdata)
+
+
+
+
+
+
 
 
 
