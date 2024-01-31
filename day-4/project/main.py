@@ -43,7 +43,8 @@ mail = Mail(app)
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 app.config['ALLOWED_EXTENSIONS']= ['png','jgp','jpeg','gif']
 app.config['MAX_CONTENT_LENGTH']=16*1024*1024
-
+app.config['UPLOAD_FILES'] = 'static/resumes/'
+app.config['ALLOWED_FILES'] = ['pdf']
 
 
 
@@ -85,8 +86,16 @@ class Blog(db.Model):
     date=db.Column(db.String(100))
     image=db.Column(db.String(1000))
     
-    
-
+class Portfolio(db.Model):
+   email = db.Column(db.String(100), db.ForeignKey('signup.email'),primary_key = True)
+   companyName = db.Column(db.String(255))
+   experience = db.Column(db.String(255))
+   jobRole = db.Column(db.String(255))
+   collegeName = db.Column(db.String(255))
+   startDate = db.Column(db.String(10))
+   endDate = db.Column(db.String(10))
+   cgpa = db.Column(db.String(5))
+   resume = db.Column(db.String(255))
 
 
 @app.route("/test/")
@@ -281,12 +290,63 @@ def updateprofile(id):
     return render_template("profile.html",userdata=userdata)
 
 
+def allowed_resumes(filename):
+    return '.' in filename and filename.rsplit('.',1)[1].lower() in app.config['ALLOWED_FILES']
+
+
+@app.route("/portfolio",methods=['GET','POST'])
+def portfolio():
+    if not current_user.is_authenticated:
+        flash("Please Login and try again","info")
+        return redirect(url_for('login'))
+    
+    userdata=Signup.query.filter_by(email=current_user.email).first()
+
+    check=Portfolio.query.filter_by(email=current_user.email).first()
+    
+    if not check:
+        render_template("portfolio.html",userdata=userdata)
 
 
 
+        if request.method == 'POST':
+            companyName = request.form.get('companyname')
+            experience = request.form.get('experience')
+            jobRole = request.form.get('role')
+            collegeName = request.form.get('collegename')
+            startDate = request.form.get('startdate')
+            endDate = request.form.get('enddate')
+            cgpa = request.form.get('cgpa')
+            file = request.files['resume']
+            print(file)
 
+            # if 'file' not in request.files:
+            #     flash('No file part')
+            #     return redirect(request.url)
 
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
+            
+            if file and allowed_resumes(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FILES'], filename))
+                query = Portfolio(email=current_user.email,companyName=companyName,experience = experience,jobRole=jobRole,collegeName=collegeName,startDate=startDate,endDate=endDate,cgpa=cgpa,resume=filename)
+                print(query)
+                db.session.add(query)
+                db.session.commit()
 
+                flash("Portfolio is Uploaded","success")            
+                return redirect(url_for('profile'))
+
+            else:
+                flash("Upload the resume which has correct file formats","danger")
+                return render_template("portfolio.html",userdata=userdata) 
+
+    else:
+        return redirect(url_for('profile'))    
+            
+    return render_template("portfolio.html",userdata=userdata)  
 
 
 

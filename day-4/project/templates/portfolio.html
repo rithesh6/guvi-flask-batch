@@ -1,0 +1,111 @@
+{% extends "base.html" %} 
+{% block title %} Portfolio form {% endblock title %} 
+{%block body %}
+
+<section id="contact" class="contact">
+    <div class="container" data-aos="fade-up">
+    <div class="section-title">
+    <h2>
+        Portfolio details
+    </h2>
+    </div>
+    <div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+           {% include "messages.html" %}
+    <form action="/portfolio" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+    <input
+                 class="form-control mb-2 p-3"
+                 type="email"
+                 name="email"
+                 placeholder="Enter Email"
+                 value={{userdata.email}}
+                 disabled
+               />
+    </div>
+    <div class="form-group">
+    <input
+                 class="form-control mb-2 p-3"
+                 type="text"
+                 name="companyname"
+                 placeholder="Enter Company Name"
+                 required
+               />
+    </div>
+    <div class="form-group">
+    <input
+                 class="form-control mb-2 p-3"
+                 type="text"
+                 name="experience"
+                 placeholder="Enter Experience"
+                 required
+               />
+    </div>
+    <div class="form-group">
+    <input
+                 class="form-control mb-2 p-3"
+                 type="text"
+                 name="role"
+                 placeholder="Enter Role"
+                 required
+               />
+    </div>
+    <div class="form-group">
+    <input
+                 class="form-control mb-2 p-3"
+                 type="text"
+                 name="collegename"
+                 placeholder="Enter College Name"
+                 required
+               />
+    </div>
+    <div class="form-group">
+    <input
+                 class="form-control mb-2 p-3"
+                 type="date"
+                 name="startdate"
+                 placeholder="Enter Start Date"
+                 required
+               />
+    </div>
+    <div class="form-group">
+    <input
+                 class="form-control mb-2 p-3"
+                 type="date"
+                 name="enddate"
+                 placeholder="Enter End Date"
+                 required
+               />
+    </div>
+    <div class="form-group">
+    <input
+                 class="form-control mb-2 p-3"
+                 type="text"
+                 name="cgpa"
+                 placeholder="Enter CGPA out of 10"
+                 required
+               />
+    </div>
+    <div class="form-group">
+    <input
+                 class="form-control mb-2 p-3"
+                 type="file"
+                 name="resume"
+                 placeholder="Choose File to Upload Resume"
+                 required
+               />
+    </div>
+    <br />
+    <div class="d-grid gap-3">
+    <button class="btn btn-success" type="submit">Upload</button>
+    </div>
+    </form>
+    </div>
+    <div class="col-md-4"></div>
+    </div>
+    </div>
+    </section>
+    <!-- End Contact Section -->
+
+{% endblock body %}
