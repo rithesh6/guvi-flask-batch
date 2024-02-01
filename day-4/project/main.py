@@ -11,6 +11,9 @@ from flask_mail import Mail
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime 
+from flask import make_response
+from flask import send_from_directory
+
 
 local_server= True
 app=Flask(__name__)
@@ -358,6 +361,10 @@ def portfolio():
 
 
 
-
+@app.route('/display_resume')
+def display_resume():
+    user_portfolio = Portfolio.query.filter_by(email=current_user.email).first()
+    resume_name = user_portfolio.resume
+    return send_from_directory('static/resumes', resume_name, mimetype='application/pdf')
 
 app.run(debug=True)
